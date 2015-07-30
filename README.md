@@ -1,2 +1,5 @@
-# laravel-siteinfo
-Deal with key-value site infos, also support multi languages.
+# Persistent Settings Manager for Laravel
+
+ * Simple key-value storage
+ * JSON format support.
+ * Localization support.
