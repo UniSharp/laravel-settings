@@ -1,0 +1,19 @@
+{
+  "name": "unisharp/laravel-settings",
+  "description": "Persistent settings sanager for laravel 5",
+  "authors": [
+    {
+      "name": "Unisharp Ltd.",
+      "email": "service@unisharp.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "illuminate/support": ">=5.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Unisharp\\Setting\\": "src/"
+    }
+  }
+}
