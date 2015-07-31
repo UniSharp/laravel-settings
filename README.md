@@ -6,14 +6,12 @@
 
 ## Usage
 
-	```php
-		// get a setting with language(optional)
-		// return $default_value(optional) if not exists
-		Setting::get($key, $default_value = '', $language = '');
+	// get a setting with language(optional)
+	// return $default_value(optional) if not exists
+	Setting::get($key, $default_value = '', $language = '');
 
-		// set a setting by key and value with language(optional)
-		Setting::set($key, $value, $language = '');
+	// set a setting by key and value with language(optional)
+	Setting::set($key, $value, $language = '');
 
-		// return true if the setting exists
-		Setting::has($key, $language = '');
-	```
+	// return true if the setting exists
+	Setting::has($key, $language = '');
