@@ -7,15 +7,18 @@
 ## Usage
 
 ```php
-	Setting::get($key, $default_value = null, $language = null);
-	// get a setting with language(optional)
+	Setting::lang($language)->get($key, $default_value = null);
+	// get a setting value
 	// return $default_value(optional) if not exists
+	// chain method lang() is optional
 
-	Setting::set($key, $value, $language = null);
-	// set a setting by key and value with language(optional)
+	Setting::lang($language)->set($key, $value);
+	// set a setting by key and value
+	// chain method lang() is optional
 
-	Setting::has($key, $language = null);
+	Setting::lang($language)->has($key);
 	// return true if the setting exists
+	// chain method lang() is optional
 ```
 
 ## Dealing with JSON
