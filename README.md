@@ -7,6 +7,8 @@
 ## Usage
 
 ```php
+	echo Setting::get('name', 'Michelle');
+	
 	Setting::lang($language)->get($key, $default_value = null);
 	// get a setting value
 	// return $default_value(optional) if not exists
