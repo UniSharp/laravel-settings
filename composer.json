@@ -1,6 +1,6 @@
 {
   "name": "unisharp/laravel-settings",
-  "description": "Persistent settings sanager for laravel 5",
+  "description": "Persistent settings manager for laravel 5",
   "authors": [
     {
       "name": "Unisharp Ltd.",
