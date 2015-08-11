@@ -4,20 +4,38 @@
  * JSON format support.
  * Localization support.
 
+## Installation
+
+1. install package
+	```php
+		composer require unisharp/laravel-settings
+	```
+1. set service provider in config/app.php
+	```php
+		Unisharp\Setting\SettingServiceProvider::class,
+	```
+1. create settings table
+	```php
+		php artisan migrate --path=vendor/unisharp/laravel-settings/src/migrations
+	```
+1. visit `http://your-project/setting-test`
+
 ## Usage
 
-```php
-	Setting::get('name', 'Michelle');
-	// get setting value with key 'name'
-	// return 'Michelle' if the key does not exists
+Sample codes were written in controllers/ExampleComtroller.php.
 
-	Setting::lang('zh-TW')->get('name', 'Michelle');
+```php
+	Setting::get('name', 'Computer');
+	// get setting value with key 'name'
+	// return 'Computer' if the key does not exists
+
+	Setting::lang('zh-TW')->get('name', 'Computer');
 	// get setting value with key and language
 
-	Setting::set('name', 'Michelle');
+	Setting::set('name', 'Computer');
 	// set setting value by key
 
-	Setting::lang('zh-TW')->set('name', 'Michelle');
+	Setting::lang('zh-TW')->set('name', 'Computer');
 	// set setting value by key and language
 
 	Setting::has('name');
@@ -27,7 +45,7 @@
 	// check the key exists by language, return boolean
 ```
 
-## Dealing with JSON
+## Dealing with array
 
 ```php
 	Setting::get('item');
