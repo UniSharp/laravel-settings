@@ -7,18 +7,24 @@
 ## Installation
 
 1. install package
+
 	```php
 		composer require unisharp/laravel-settings
 	```
+
 1. set service provider in config/app.php
+
 	```php
 		Unisharp\Setting\SettingServiceProvider::class,
 	```
+
 1. create settings table
+
 	```php
 		php artisan migrate --path=vendor/unisharp/laravel-settings/src/migrations
 	```
-1. visit `http://your-project/setting-test`
+
+1. visit `http://your-project-url/setting-test`
 
 ## Usage
 
@@ -43,6 +49,12 @@ Sample codes were written in controllers/ExampleComtroller.php.
 
 	Setting::lang('zh-TW')->has('name');
 	// check the key exists by language, return boolean
+
+	Setting::forget('name');
+	// delete the setting by key
+
+	Setting::lang('zh-TW')->forget('name');
+	// delete the setting by key and language
 ```
 
 ## Dealing with array
