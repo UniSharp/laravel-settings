@@ -3,6 +3,7 @@
 namespace Unisharp\Setting;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
 
 /**
  * Class SettingServiceProvider
@@ -18,9 +19,19 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        include __DIR__ . '/routes.php';
+        include __DIR__ . '/../routes.php';
 
-        $this->loadViewsFrom(__DIR__.'/views', 'laravel-settings');
+        $this->loadViewsFrom(__DIR__.'/../views', 'laravel-settings');
+
+        $this->setupRoutes($this->app->router);
+    }
+
+    public function setupRoutes(Router $router)
+    {
+        $router->group(['namespace' => 'Unisharp\Setting\Controllers'], function($router)
+        {
+            require __DIR__.'/../routes.php';
+        });
     }
 
     /**
