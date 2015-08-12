@@ -58,9 +58,13 @@ class Setting extends Eloquent implements SettingInterface
     {
         if (strpos($key, '.') !== false) {
             $setting = Setting::getSubValue($key);
+            self::$lang = null;
+
             return (empty($setting)) ? false : true;
         } else {
             $setting = Setting::getFromDb($key);
+            self::$lang = null;
+            
             return (count($setting) === 0) ? false : true;
         }
     }
