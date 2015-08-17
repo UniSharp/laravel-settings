@@ -2,31 +2,37 @@
 
 namespace Unisharp\Setting;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Cache;
+use \Unisharp\Setting\EloquentStorage as Storage;
 
-class Setting extends Eloquent implements SettingInterface
+class Setting
 {
-    protected $fillable = ['key', 'value', 'locale'];
+    protected $lang = null;
 
-    public $timestamps = false;
-
-    protected static $lang = null;
+    public function all()
+    {
+        return Storage::all();
+    }
 
     /**
      * Return setting value or default value by key.
      *
      * @param  string  $key
      * @param  string  $value
-     * @return string
+     * @return string|null
      */
-    public static function get($key, $default_value = null)
+    public function get($key, $default_value = null)
     {
         if (strpos($key, '.') !== false) {
-            $setting = Setting::getSubValue($key);
+            $setting = static::getSubValue($key);
         } else {
-            $setting = (Setting::has($key)) ? Setting::getByKey($key) : $default_value;
+            if (static::hasByKey($key)) {
+                $setting = static::getByKey($key);
+            } else {
+                $setting = $default_value;
+            }
         }
-        self::$lang = null;
+        $this->lang = null;
         return $setting;
     }
 
@@ -37,15 +43,16 @@ class Setting extends Eloquent implements SettingInterface
      * @param  mixed   $value
      * @return void
      */
-    public static function set($key, $value)
+    public function set($key, $value)
     {
         if (strpos($key, '.') !== false) {
-            Setting::setSubValue($key, $value);
+            static::setSubValue($key, $value);
         } else {
-            Setting::setByKey($key, $value);
+            static::setByKey($key, $value);
         }
 
-        self::$lang = null;
+        $this->lang = null;
+        return;
     }
 
     /**
@@ -54,19 +61,13 @@ class Setting extends Eloquent implements SettingInterface
      * @param  string  $key
      * @return boolean
      */
-    public static function has($key)
+    public function has($key)
     {
-        if (strpos($key, '.') !== false) {
-            $setting = Setting::getSubValue($key);
-            self::$lang = null;
+        $exists = static::hasByKey($key);
 
-            return (empty($setting)) ? false : true;
-        } else {
-            $setting = Setting::getFromDb($key);
-            self::$lang = null;
-            
-            return (count($setting) === 0) ? false : true;
-        }
+        $this->lang = null;
+
+        return $exists;
     }
 
     /**
@@ -75,129 +76,143 @@ class Setting extends Eloquent implements SettingInterface
      * @param  string  $key
      * @return void
      */
-    public static function forget($key)
+    public function forget($key)
     {
         if (strpos($key, '.') !== false) {
-            Setting::forgetSubKey($key);
+            static::forgetSubKey($key);
         } else {
-            Setting::forgetByKey($key);
+            static::forgetByKey($key);
         }
 
-        self::$lang = null;
+        $this->lang = null;
+        return;
     }
 
     /**
      * Set the language to work with other functions.
      *
      * @param  string  $language
-     * @return void
+     * @return instance of Setting
      */
-    public static function lang($language)
+    public function lang($language)
     {
-        self::$lang = (empty($language)) ? null : $language;
+        if (empty($language)) {
+            $this->lang = null;
+        } else {
+            $this->lang = $language;
+        }
 
-        return new self();
+        return $this;
     }
 
-    /*********************
+    /*
+     *********************
      * Private functions *
      *********************
      */
 
-    private static function getByKey($key)
+    private function getByKey($key)
     {
-        $setting = Setting::getFromDb($key)->value;
-        $setting = (is_array(json_decode($setting))) ? json_decode($setting) : $setting;
+        if (strpos($key, '.') !== false) {
+            $main_key = explode('.', $key)[0];
+        } else {
+            $main_key = $key;
+        }
+
+        if (Cache::has($main_key.'@'.$this->lang)) {
+            $setting = Cache::get($main_key.'@'.$this->lang);
+        } else {
+            $setting = Storage::retrieve($main_key, $this->lang);
+
+            if (!is_null($setting)) {
+                $setting = $setting->value;
+            }
+
+            $setting_array = json_decode($setting, true);
+
+            if (is_array($setting_array)) {
+                $setting = $setting_array;
+            }
+
+            Cache::add($main_key.'@'.$this->lang, $setting, 1);
+        }
 
         return $setting;
     }
 
-    private static function getFromDb($key)
+    private function setByKey($key, $value)
     {
-        $setting = Setting::where('key', $key);
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
 
-        $setting = (!is_null(self::$lang)) ? $setting->where('locale', self::$lang) : $setting->whereNull('locale');
-
-        return $setting->first();
-    }
-
-    private static function getSubValue($key)
-    {
-        $setting = Setting::getSettingArray($key);
-
-        $subkeys = Setting::getSubKeys($key);
-
-        $setting = array_get($setting, $subkeys);
-
-        return $setting;
-    }
-
-    private static function setByKey($key, $value)
-    {
-        $value = (is_array($value)) ? json_encode($value) : $value;
         $main_key = explode('.', $key)[0];
         
-        if (Setting::has($main_key)) {
-            $setting = (!is_null(self::$lang)) ? Setting::where('locale', self::$lang) : new Setting();
-
-            $setting->where('key', $main_key)->update(['value' => $value]);
+        if (static::hasByKey($main_key)) {
+            Storage::modify($main_key, $value, $this->lang);
         } else {
-            $setting = ['key' => $main_key, 'value' => $value];
+            Storage::store($main_key, $value, $this->lang);
+        }
 
-            if (!is_null(self::$lang)) {
-                $setting['locale'] = self::$lang;
-            }
-            
-            Setting::create($setting);
+        Cache::forget($main_key);
+    }
+
+    private function hasByKey($key)
+    {
+        if (strpos($key, '.') !== false) {
+            $setting = static::getSubValue($key);
+            return (empty($setting)) ? false : true;
+        } else {
+            $setting = Storage::retrieve($key, $this->lang);
+            return (count($setting) === 0) ? false : true;
         }
     }
 
-    private static function setSubValue($key, $new_value)
+    private function forgetByKey($key)
     {
-        $setting = Setting::getSettingArray($key);
+        Storage::forget($key, $this->lang);
 
-        $subkeys = Setting::getSubKeys($key);
-
-        array_set($setting, $subkeys, $new_value);
-
-        Setting::setByKey($key, $setting);
+        Cache::forget($key.'@'.$this->lang);
     }
 
-    private static function getSettingArray($key)
+    private function getSubValue($key)
     {
-        $mainKey = explode('.', $key)[0];
-        $setting = Setting::getFromDb($mainKey);
-        $setting = is_null($setting) ? $setting : json_decode($setting->value, true);
+        $setting = static::getByKey($key);
+
+        $subkey = static::removeMainKey($key);
+
+        $setting = array_get($setting, $subkey);
 
         return $setting;
     }
 
-    private static function getSubKeys($key)
+    private function setSubValue($key, $new_value)
     {
-        $keys = explode('.', $key);
-        unset($keys[0]);
-        $subkeys = implode('.', $keys);
+        $setting = static::getByKey($key);
 
-        return $subkeys;
+        $subkey = static::removeMainKey($key);
+
+        array_set($setting, $subkey, $new_value);
+
+        static::setByKey($key, $setting);
     }
 
-    private static function forgetSubKey($key)
+    private function forgetSubKey($key)
     {
-        $setting = Setting::getSettingArray($key);
+        $setting = static::getByKey($key);
 
-        $subkeys = Setting::getSubKeys($key);
+        $subkey = static::removeMainKey($key);
 
-        array_forget($setting, $subkeys);
+        array_forget($setting, $subkey);
 
-        Setting::setByKey($key, $setting);
+        static::setByKey($key, $setting);
     }
 
-    private static function forgetByKey($key)
+    private function removeMainKey($key)
     {
-        $setting = Setting::where('key', $key);
+        $pos = strpos($key, '.');
+        $subkey = substr($key, $pos+1);
 
-        $setting = (!is_null(self::$lang)) ? $setting->where('locale', self::$lang) : $setting->whereNull('locale');
-
-        $setting->delete();
+        return $subkey;
     }
 }

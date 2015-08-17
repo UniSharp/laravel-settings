@@ -2,7 +2,7 @@
 
 namespace Unisharp\Setting;
 
-interface SettingInterface
+interface SettingStorageInterface
 {
     /**
      * Return setting value or default value by key.
@@ -11,7 +11,7 @@ interface SettingInterface
      * @param  string  $value
      * @return string
      */
-    public static function get($key, $default_value = null);
+    public static function retrieve($key, $lang = null);
 
     /**
      * Set the setting by key and value.
@@ -20,7 +20,7 @@ interface SettingInterface
      * @param  mixed   $value
      * @return void
      */
-    public static function set($key, $value);
+    public static function store($key, $value, $lang);
 
     /**
      * Check if the setting exists.
@@ -28,7 +28,7 @@ interface SettingInterface
      * @param  string  $key
      * @return boolean
      */
-    public static function has($key);
+    public static function modify($key, $value, $lang);
 
     /**
      * Delete a setting.
@@ -36,13 +36,5 @@ interface SettingInterface
      * @param  string  $key
      * @return void
      */
-    public static function forget($key);
-
-    /**
-     * Set the language to work with other functions.
-     *
-     * @param  string  $language
-     * @return void
-     */
-    public static function lang($language);
+    public static function forget($key, $lang);
 }

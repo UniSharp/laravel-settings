@@ -19,19 +19,7 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        include __DIR__ . '/../routes.php';
-
-        $this->loadViewsFrom(__DIR__.'/../views', 'laravel-settings');
-
-        $this->setupRoutes($this->app->router);
-    }
-
-    public function setupRoutes(Router $router)
-    {
-        $router->group(['namespace' => 'Unisharp\Setting\Controllers'], function($router)
-        {
-            require __DIR__.'/../routes.php';
-        });
+        
     }
 
     /**
@@ -41,6 +29,10 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('\Unisharp\Setting\SettingInterface', '\Unisharp\Setting\Setting');
+        $this->app->bind('Setting', function () {
+            return new Setting;
+        });
+
+        $this->app->bind('\Unisharp\Setting\SettingStorageInterface', '\Unisharp\Setting\EloquentStorage');
     }
 }

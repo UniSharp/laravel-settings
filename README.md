@@ -12,10 +12,18 @@
 		composer require unisharp/laravel-settings
 	```
 
-1. set service provider in config/app.php
+1. edit config/app.php
+
+	service provider :
 
 	```php
 		Unisharp\Setting\SettingServiceProvider::class,
+	```
+
+    class aliases :
+
+	```php
+		'Setting' => Unisharp\Setting\SettingFacade::class,
 	```
 
 1. create settings table
@@ -27,8 +35,6 @@
 1. visit `http://your-project-url/setting-test`
 
 ## Usage
-
-Sample codes were written in controllers/ExampleComtroller.php.
 
 ```php
 	Setting::get('name', 'Computer');
