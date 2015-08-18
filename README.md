@@ -1,8 +1,8 @@
 # Persistent Settings Manager for Laravel
 
  * Simple key-value storage
- * JSON format support.
- * Localization support.
+ * Support multi-level array (dot delimited keys) structure.
+ * Localization supported.
 
 ## Installation
 
