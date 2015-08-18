@@ -1,6 +1,9 @@
 {
   "name": "unisharp/laravel-settings",
   "description": "Persistent settings manager for laravel 5",
+  "type": "library",
+  "keywords": [ "key-value", "storage", "settings", "persistent", "laravel"],
+  "license": "MIT",
   "authors": [
     {
       "name": "Unisharp Ltd.",
