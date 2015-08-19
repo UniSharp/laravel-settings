@@ -2,21 +2,30 @@
   "name": "unisharp/laravel-settings",
   "description": "Persistent settings manager for laravel, translations are supported.",
   "type": "library",
-  "keywords": [ "key-value", "storage", "settings", "persistent", "laravel"],
+  "keywords": [
+	"key-value",
+	"storage",
+	"settings",
+	"persistent",
+	"laravel"
+  ],
   "license": "MIT",
   "authors": [
-    {
-      "name": "Unisharp Ltd.",
-      "email": "service@unisharp.com"
-    }
+	{
+	  "name": "Unisharp Ltd.",
+	  "email": "service@unisharp.com"
+	}
   ],
   "require": {
-    "php": ">=5.5.0",
-    "illuminate/support": ">=5.0.0"
+	"php": ">=5.5.0",
+	"illuminate/support": ">=5.0.0"
   },
   "autoload": {
-    "psr-4": {
-      "Unisharp\\Setting\\": "src/Setting/"
-    }
+	"classmap": [
+	  "src/migrations"
+	],
+	"psr-4": {
+	  "Unisharp\\Setting\\": "src/Setting/"
+	}
   }
 }
