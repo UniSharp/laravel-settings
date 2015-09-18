@@ -154,7 +154,9 @@ class Setting
             Storage::store($main_key, $value, $this->lang);
         }
 
-        Cache::forget($main_key);
+        if (Cache::has($main_key.'@'.$this->lang)) {
+            Cache::forget($main_key.'@'.$this->lang);
+        }
     }
 
     private function hasByKey($key)
