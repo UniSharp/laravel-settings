@@ -32,7 +32,6 @@
 		php artisan migrate --path=vendor/unisharp/laravel-settings/src/migrations
 	```
 
-1. visit `http://your-project-url/setting-test`
 
 ## Usage
 
