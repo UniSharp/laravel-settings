@@ -29,7 +29,8 @@
 1. create settings table
 
 	```php
-		php artisan migrate --path=vendor/unisharp/laravel-settings/src/migrations
+		php artisan vendor:publish --tag=settings
+		php artisan migrate
 	```
 
 
