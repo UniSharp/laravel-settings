@@ -165,7 +165,12 @@ class Setting
             $setting = static::getSubValue($key);
             return (empty($setting)) ? false : true;
         } else {
-            $setting = Storage::retrieve($key, $this->lang);
+            if (Cache::has(key.'@'.$this->lang)) {
+                $setting = Cache::get($key.'@'.$this->lang);
+            } else {
+                $setting = Storage::retrieve($key, $this->lang);
+            }
+            //$setting = Storage::retrieve($key, $this->lang);
             return (count($setting) === 0) ? false : true;
         }
     }
