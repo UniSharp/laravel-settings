@@ -165,7 +165,7 @@ class Setting
             $setting = static::getSubValue($key);
             return (empty($setting)) ? false : true;
         } else {
-            if (Cache::has(key.'@'.$this->lang)) {
+            if (Cache::has($key.'@'.$this->lang)) {
                 $setting = Cache::get($key.'@'.$this->lang);
             } else {
                 $setting = Storage::retrieve($key, $this->lang);
