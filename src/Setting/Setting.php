@@ -8,6 +8,7 @@ use \Unisharp\Setting\EloquentStorage as Storage;
 class Setting
 {
     protected $lang = null;
+    protected $autoResetLang = true;
 
     public function all()
     {
@@ -32,7 +33,7 @@ class Setting
                 $setting = $default_value;
             }
         }
-        $this->lang = null;
+        $this->resetLang();
         return $setting;
     }
 
@@ -51,7 +52,7 @@ class Setting
             static::setByKey($key, $value);
         }
 
-        $this->lang = null;
+        $this->resetLang();
         return;
     }
 
@@ -65,7 +66,7 @@ class Setting
     {
         $exists = static::hasByKey($key);
 
-        $this->lang = null;
+        $this->resetLang();
 
         return $exists;
     }
@@ -84,9 +85,39 @@ class Setting
             static::forgetByKey($key);
         }
 
-        $this->lang = null;
+        $this->resetLang();
         return;
     }
+
+
+    /**
+     * Should language parameter auto retested ?
+     *
+     * @param  boolean  $option
+     * @return instance of Setting
+     */
+    public function langResetting($option = false)
+    {
+        $this->autoResetLang = $option;
+        return $this;
+    }
+
+
+    /**
+     * Reset the language so we could switch to other local
+     *
+     * @param  boolean  $force
+     * @return instance of Setting
+     */
+    private function resetLang($force = false)
+    {
+        if ($this->autoResetLang || $force)
+        {
+            $this->lang = null;    
+        }
+        return $this;
+    }
+
 
     /**
      * Set the language to work with other functions.
@@ -97,7 +128,7 @@ class Setting
     public function lang($language)
     {
         if (empty($language)) {
-            $this->lang = null;
+            $this->resetLang();
         } else {
             $this->lang = $language;
         }
