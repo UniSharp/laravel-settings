@@ -8,7 +8,7 @@
 
 1. Install package
 
-    ```php
+    ```bash
     composer require unisharp/laravel-settings
     ```
 
@@ -28,7 +28,7 @@
 
 1. Create settings table
 
-    ```php
+    ```bash
     php artisan vendor:publish --tag=settings
     php artisan migrate
     ```
