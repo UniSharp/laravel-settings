@@ -84,7 +84,5 @@ Setting::get('item.USB');
 By default language parameter are being resets every set or get calls you could disable that and set your own long term language parameter forever using any route service provider or other method.
 
 ```php
-\Setting::lang(
-    \App::getLocale()
-)->langResetting(false);
+Setting::lang(App::getLocale())->langResetting(false);
 ```
