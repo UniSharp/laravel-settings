@@ -5,13 +5,20 @@ namespace Unisharp\Setting;
 interface SettingStorageInterface
 {
     /**
+     * Return all data
+     *
+     * @return array
+     */
+    public function all();
+
+    /**
      * Return setting value or default value by key.
      *
      * @param  string  $key
      * @param  string  $value
      * @return string
      */
-    public static function retrieve($key, $lang = null);
+    public function retrieve($key, $lang = null);
 
     /**
      * Set the setting by key and value.
@@ -20,7 +27,7 @@ interface SettingStorageInterface
      * @param  mixed   $value
      * @return void
      */
-    public static function store($key, $value, $lang);
+    public function store($key, $value, $lang);
 
     /**
      * Check if the setting exists.
@@ -28,7 +35,7 @@ interface SettingStorageInterface
      * @param  string  $key
      * @return boolean
      */
-    public static function modify($key, $value, $lang);
+    public function modify($key, $value, $lang);
 
     /**
      * Delete a setting.
@@ -36,5 +43,5 @@ interface SettingStorageInterface
      * @param  string  $key
      * @return void
      */
-    public static function forget($key, $lang);
+    public function forget($key, $lang);
 }

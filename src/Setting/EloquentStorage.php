@@ -12,7 +12,12 @@ class EloquentStorage extends Eloquent implements SettingStorageInterface
 
     public $timestamps = false;
 
-    public static function retrieve($key, $lang = null)
+    public function all()
+    {
+        return static::all();
+    }
+
+    public function retrieve($key, $lang = null)
     {
         $setting = static::where('key', $key);
 
@@ -25,18 +30,18 @@ class EloquentStorage extends Eloquent implements SettingStorageInterface
         return $setting->first();
     }
 
-    public static function store($key, $value, $lang)
+    public function store($key, $value, $lang)
     {
         $setting = ['key' => $key, 'value' => $value];
 
         if (!is_null($lang)) {
             $setting['locale'] = $lang;
         }
-        
+
         static::create($setting);
     }
 
-    public static function modify($key, $value, $lang)
+    public function modify($key, $value, $lang)
     {
         if (!is_null($lang)) {
             $setting = static::where('locale', $lang);
@@ -47,7 +52,7 @@ class EloquentStorage extends Eloquent implements SettingStorageInterface
         $setting->where('key', $key)->update(['value' => $value]);
     }
 
-    public static function forget($key, $lang)
+    public function forget($key, $lang)
     {
         $setting = static::where('key', $key);
 

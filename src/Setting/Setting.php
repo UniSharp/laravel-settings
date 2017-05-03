@@ -2,17 +2,23 @@
 
 namespace Unisharp\Setting;
 
-use Cache;
-use \Unisharp\Setting\EloquentStorage as Storage;
+use Illuminate\Support\Facades\Cache;
+use \Unisharp\Setting\SettingStorageInterface;
 
 class Setting
 {
     protected $lang = null;
     protected $autoResetLang = true;
+    protected $storage = null;
+
+    public function __construct(SettingStorageInterface $storage)
+    {
+        $this->storage = $storage;
+    }
 
     public function all()
     {
-        return Storage::all();
+        return $this->storage->all();
     }
 
     /**
@@ -34,6 +40,7 @@ class Setting
             }
         }
         $this->resetLang();
+
         if (is_null($setting)) {
             $setting = $default_value;
         }
@@ -116,7 +123,7 @@ class Setting
     {
         if ($this->autoResetLang || $force)
         {
-            $this->lang = null;    
+            $this->lang = null;
         }
         return $this;
     }
@@ -156,7 +163,7 @@ class Setting
         if (Cache::has($main_key.'@'.$this->lang)) {
             $setting = Cache::get($main_key.'@'.$this->lang);
         } else {
-            $setting = Storage::retrieve($main_key, $this->lang);
+            $setting = $this->storage->retrieve($main_key, $this->lang);
 
             if (!is_null($setting)) {
                 $setting = $setting->value;
@@ -181,11 +188,11 @@ class Setting
         }
 
         $main_key = explode('.', $key)[0];
-        
+
         if (static::hasByKey($main_key)) {
-            Storage::modify($main_key, $value, $this->lang);
+            $this->storage->modify($main_key, $value, $this->lang);
         } else {
-            Storage::store($main_key, $value, $this->lang);
+            $this->storage->store($main_key, $value, $this->lang);
         }
 
         if (Cache::has($main_key.'@'.$this->lang)) {
@@ -202,16 +209,15 @@ class Setting
             if (Cache::has($key.'@'.$this->lang)) {
                 $setting = Cache::get($key.'@'.$this->lang);
             } else {
-                $setting = Storage::retrieve($key, $this->lang);
+                $setting = $this->storage->retrieve($key, $this->lang);
             }
-            //$setting = Storage::retrieve($key, $this->lang);
             return (count($setting) === 0) ? false : true;
         }
     }
 
     private function forgetByKey($key)
     {
-        Storage::forget($key, $this->lang);
+        $this->storage->forget($key, $this->lang);
 
         Cache::forget($key.'@'.$this->lang);
     }
