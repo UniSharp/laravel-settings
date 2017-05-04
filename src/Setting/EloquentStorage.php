@@ -4,18 +4,13 @@ namespace Unisharp\Setting;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class EloquentStorage extends Eloquent implements SettingStorageInterface
+class EloquentStorage extends Eloquent implements SettingStorageContract
 {
     protected $fillable = ['key', 'value', 'locale'];
 
     protected $table = 'settings';
 
     public $timestamps = false;
-
-    public function all()
-    {
-        return static::all();
-    }
 
     public function retrieve($key, $lang = null)
     {

@@ -2,18 +2,19 @@
 
 namespace Unisharp\Setting;
 
-use Illuminate\Support\Facades\Cache;
-use \Unisharp\Setting\SettingStorageInterface;
+use Illuminate\Contracts\Cache\Factory as CacheContract;
 
 class Setting
 {
     protected $lang = null;
     protected $autoResetLang = true;
     protected $storage = null;
+    protected $cache = null;
 
-    public function __construct(SettingStorageInterface $storage)
+    public function __construct(SettingStorageContract $storage, CacheContract $cache)
     {
         $this->storage = $storage;
+        $this->cache = $cache;
     }
 
     public function all()
@@ -31,10 +32,10 @@ class Setting
     public function get($key, $default_value = null)
     {
         if (strpos($key, '.') !== false) {
-            $setting = static::getSubValue($key);
+            $setting = $this->getSubValue($key);
         } else {
-            if (static::hasByKey($key)) {
-                $setting = static::getByKey($key);
+            if ($this->hasByKey($key)) {
+                $setting = $this->getByKey($key);
             } else {
                 $setting = $default_value;
             }
@@ -57,9 +58,9 @@ class Setting
     public function set($key, $value)
     {
         if (strpos($key, '.') !== false) {
-            static::setSubValue($key, $value);
+            $this->setSubValue($key, $value);
         } else {
-            static::setByKey($key, $value);
+            $this->setByKey($key, $value);
         }
 
         $this->resetLang();
@@ -74,7 +75,7 @@ class Setting
      */
     public function has($key)
     {
-        $exists = static::hasByKey($key);
+        $exists = $this->hasByKey($key);
 
         $this->resetLang();
 
@@ -90,15 +91,14 @@ class Setting
     public function forget($key)
     {
         if (strpos($key, '.') !== false) {
-            static::forgetSubKey($key);
+            $this->forgetSubKey($key);
         } else {
-            static::forgetByKey($key);
+            $this->forgetByKey($key);
         }
 
         $this->resetLang();
         return;
     }
-
 
     /**
      * Should language parameter auto retested ?
@@ -111,23 +111,6 @@ class Setting
         $this->autoResetLang = $option;
         return $this;
     }
-
-
-    /**
-     * Reset the language so we could switch to other local
-     *
-     * @param  boolean  $force
-     * @return instance of Setting
-     */
-    private function resetLang($force = false)
-    {
-        if ($this->autoResetLang || $force)
-        {
-            $this->lang = null;
-        }
-        return $this;
-    }
-
 
     /**
      * Set the language to work with other functions.
@@ -146,13 +129,21 @@ class Setting
         return $this;
     }
 
-    /*
-     *********************
-     * Private functions *
-     *********************
+    /**
+     * Reset the language so we could switch to other local
+     *
+     * @param  boolean  $force
+     * @return instance of Setting
      */
+    protected function resetLang($force = false)
+    {
+        if ($this->autoResetLang || $force) {
+            $this->lang = null;
+        }
+        return $this;
+    }
 
-    private function getByKey($key)
+    protected function getByKey($key)
     {
         if (strpos($key, '.') !== false) {
             $main_key = explode('.', $key)[0];
@@ -160,8 +151,8 @@ class Setting
             $main_key = $key;
         }
 
-        if (Cache::has($main_key.'@'.$this->lang)) {
-            $setting = Cache::get($main_key.'@'.$this->lang);
+        if ($this->cache->has($main_key.'@'.$this->lang)) {
+            $setting = $this->cache->get($main_key.'@'.$this->lang);
         } else {
             $setting = $this->storage->retrieve($main_key, $this->lang);
 
@@ -175,13 +166,13 @@ class Setting
                 $setting = $setting_array;
             }
 
-            Cache::add($main_key.'@'.$this->lang, $setting, 1);
+            $this->cache->add($main_key.'@'.$this->lang, $setting, 1);
         }
 
         return $setting;
     }
 
-    private function setByKey($key, $value)
+    protected function setByKey($key, $value)
     {
         if (is_array($value)) {
             $value = json_encode($value);
@@ -189,25 +180,25 @@ class Setting
 
         $main_key = explode('.', $key)[0];
 
-        if (static::hasByKey($main_key)) {
+        if ($this->hasByKey($main_key)) {
             $this->storage->modify($main_key, $value, $this->lang);
         } else {
             $this->storage->store($main_key, $value, $this->lang);
         }
 
-        if (Cache::has($main_key.'@'.$this->lang)) {
-            Cache::forget($main_key.'@'.$this->lang);
+        if ($this->cache->has($main_key.'@'.$this->lang)) {
+            $this->cache->forget($main_key.'@'.$this->lang);
         }
     }
 
-    private function hasByKey($key)
+    protected function hasByKey($key)
     {
         if (strpos($key, '.') !== false) {
-            $setting = static::getSubValue($key);
+            $setting = $this->getSubValue($key);
             return (empty($setting)) ? false : true;
         } else {
-            if (Cache::has($key.'@'.$this->lang)) {
-                $setting = Cache::get($key.'@'.$this->lang);
+            if ($this->cache->has($key.'@'.$this->lang)) {
+                $setting = $this->cache->get($key.'@'.$this->lang);
             } else {
                 $setting = $this->storage->retrieve($key, $this->lang);
             }
@@ -215,47 +206,47 @@ class Setting
         }
     }
 
-    private function forgetByKey($key)
+    protected function forgetByKey($key)
     {
         $this->storage->forget($key, $this->lang);
 
-        Cache::forget($key.'@'.$this->lang);
+        $this->cache->forget($key.'@'.$this->lang);
     }
 
-    private function getSubValue($key)
+    protected function getSubValue($key)
     {
-        $setting = static::getByKey($key);
+        $setting = $this->getByKey($key);
 
-        $subkey = static::removeMainKey($key);
+        $subkey = $this->removeMainKey($key);
 
         $setting = array_get($setting, $subkey);
 
         return $setting;
     }
 
-    private function setSubValue($key, $new_value)
+    protected function setSubValue($key, $new_value)
     {
-        $setting = static::getByKey($key);
+        $setting = $this->getByKey($key);
 
-        $subkey = static::removeMainKey($key);
+        $subkey = $this->removeMainKey($key);
 
         array_set($setting, $subkey, $new_value);
 
-        static::setByKey($key, $setting);
+        $this->setByKey($key, $setting);
     }
 
-    private function forgetSubKey($key)
+    protected function forgetSubKey($key)
     {
-        $setting = static::getByKey($key);
+        $setting = $this->getByKey($key);
 
-        $subkey = static::removeMainKey($key);
+        $subkey = $this->removeMainKey($key);
 
         array_forget($setting, $subkey);
 
-        static::setByKey($key, $setting);
+        $this->setByKey($key, $setting);
     }
 
-    private function removeMainKey($key)
+    protected function removeMainKey($key)
     {
         $pos = strpos($key, '.');
         $subkey = substr($key, $pos+1);

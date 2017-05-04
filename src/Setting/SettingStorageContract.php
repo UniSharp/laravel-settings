@@ -2,14 +2,14 @@
 
 namespace Unisharp\Setting;
 
-interface SettingStorageInterface
+interface SettingStorageContract
 {
     /**
      * Return all data
      *
      * @return array
      */
-    public function all();
+    public static function all();
 
     /**
      * Return setting value or default value by key.
