@@ -13,4 +13,15 @@
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <!-- and this is where your report will be written -->
+        <log type="coverage-html" target="./builds/coverage-html" lowUpperBound="35" highLowerBound="70" />
+        <log type="coverage-clover" target="./builds/coverage.xml" />
+        <log type="coverage-text" target="./builds/coverage.txt" showUncoveredFiles="false"/>
+    </logging>
 </phpunit>
