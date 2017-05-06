@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/UniSharp/laravel-settings.svg?branch=master)](https://travis-ci.org/UniSharp/laravel-settings)
+
 # Persistent Settings Manager for Laravel
 
  * Simple key-value storage
