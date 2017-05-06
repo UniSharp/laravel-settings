@@ -12,4 +12,4 @@ before_script:
 
 script:
   - vendor/bin/phpunit --verbose
-  - [ $(echo "$(grep '^  Lines' builds/coverage.txt | awk '{print $2;}' | tr -d '%') >= 75" | bc) -eq "1" ]
+  - bash -c "[ $(echo "$(grep '^  Lines' builds/coverage.txt | awk '{print $2;}' | tr -d '%') >= 75" | bc) -eq "1" ]"
