@@ -6,6 +6,10 @@ php:
 env:
   - SH=bash
 
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install bc -y
+
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-dist
