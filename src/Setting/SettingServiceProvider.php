@@ -33,10 +33,8 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Setting', function () {
-            return new Setting;
-        });
+        $this->app->bind('Setting', '\Unisharp\Setting');
 
-        $this->app->bind('\Unisharp\Setting\SettingStorageInterface', '\Unisharp\Setting\EloquentStorage');
+        $this->app->bind('\Unisharp\Setting\SettingStorageContract', '\Unisharp\Setting\EloquentStorage');
     }
 }
