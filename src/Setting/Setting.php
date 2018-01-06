@@ -202,7 +202,8 @@ class Setting
             } else {
                 $setting = $this->storage->retrieve($key, $this->lang);
             }
-            return (count($setting) === 0) ? false : true;
+            
+           return (empty($setting)) ? false : true;
         }
     }
 
