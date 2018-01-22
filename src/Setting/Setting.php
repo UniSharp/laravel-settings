@@ -25,8 +25,9 @@ class Setting
     /**
      * Return setting value or default value by key.
      *
-     * @param  string  $key
-     * @param  string  $value
+     * @param string $key
+     * @param string $value
+     *
      * @return string|null
      */
     public function get($key, $default_value = null)
@@ -45,14 +46,16 @@ class Setting
         if (is_null($setting)) {
             $setting = $default_value;
         }
+
         return $setting;
     }
 
     /**
      * Set the setting by key and value.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function set($key, $value)
@@ -64,14 +67,14 @@ class Setting
         }
 
         $this->resetLang();
-        return;
     }
 
     /**
      * Check if the setting exists.
      *
-     * @param  string  $key
-     * @return boolean
+     * @param string $key
+     *
+     * @return bool
      */
     public function has($key)
     {
@@ -85,7 +88,8 @@ class Setting
     /**
      * Delete a setting.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return void
      */
     public function forget($key)
@@ -97,25 +101,27 @@ class Setting
         }
 
         $this->resetLang();
-        return;
     }
 
     /**
      * Should language parameter auto retested ?
      *
-     * @param  boolean  $option
+     * @param bool $option
+     *
      * @return instance of Setting
      */
     public function langResetting($option = false)
     {
         $this->autoResetLang = $option;
+
         return $this;
     }
 
     /**
      * Set the language to work with other functions.
      *
-     * @param  string  $language
+     * @param string $language
+     *
      * @return instance of Setting
      */
     public function lang($language)
@@ -130,9 +136,10 @@ class Setting
     }
 
     /**
-     * Reset the language so we could switch to other local
+     * Reset the language so we could switch to other local.
      *
-     * @param  boolean  $force
+     * @param bool $force
+     *
      * @return instance of Setting
      */
     protected function resetLang($force = false)
@@ -140,6 +147,7 @@ class Setting
         if ($this->autoResetLang || $force) {
             $this->lang = null;
         }
+
         return $this;
     }
 
@@ -195,6 +203,7 @@ class Setting
     {
         if (strpos($key, '.') !== false) {
             $setting = $this->getSubValue($key);
+
             return (empty($setting)) ? false : true;
         } else {
             if ($this->cache->has($key.'@'.$this->lang)) {
@@ -250,7 +259,7 @@ class Setting
     protected function removeMainKey($key)
     {
         $pos = strpos($key, '.');
-        $subkey = substr($key, $pos+1);
+        $subkey = substr($key, $pos + 1);
 
         return $subkey;
     }

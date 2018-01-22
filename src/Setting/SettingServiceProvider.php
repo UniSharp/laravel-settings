@@ -3,15 +3,12 @@
 namespace Unisharp\Setting;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
 
 /**
- * Class SettingServiceProvider
- * @package Unisharp\Setting
+ * Class SettingServiceProvider.
  */
 class SettingServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap the application services.
      *
@@ -22,7 +19,7 @@ class SettingServiceProvider extends ServiceProvider
         $filename = '2015_08_06_184708_create_settings_table.php';
 
         $this->publishes([
-            __DIR__ . '/../../database/migrations/' . $filename => base_path('/database/migrations/' . $filename),
+            __DIR__.'/../../database/migrations/'.$filename => base_path('/database/migrations/'.$filename),
         ], 'settings');
     }
 

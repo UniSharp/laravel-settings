@@ -1,9 +1,9 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 // setup database
-$database = new Illuminate\Database\Capsule\Manager;
+$database = new Illuminate\Database\Capsule\Manager();
 $database->addConnection([
     'driver'   => 'sqlite',
     'database' => ':memory:',
