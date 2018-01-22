@@ -2,17 +2,17 @@
 
 namespace Tests;
 
-use Mockery as m;
 use CreateSettingsTable;
-use Unisharp\Setting\Setting;
-use PHPUnit\Framework\TestCase;
 use Illuminate\Container\Container;
-use Unisharp\Setting\EloquentStorage;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Capsule\Manager;
 use Illuminate\Contracts\Cache\Factory as CacheContract;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Support\Facades\Schema;
+use Mockery as m;
+use PHPUnit\Framework\TestCase;
+use Unisharp\Setting\EloquentStorage;
+use Unisharp\Setting\Setting;
 
-class UnitTest extends TestCase
+class SettingsTest extends TestCase
 {
     public function setUp()
     {
@@ -33,7 +33,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('has')->andReturn(false);
         $cache->shouldReceive('add')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->set('key', 'value');
 
@@ -47,7 +47,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('get')->with('key@')->andReturn('value');
         $cache->shouldReceive('forget')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->set('key', 'value');
 
@@ -60,7 +60,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('has')->andReturn(false);
         $cache->shouldReceive('add')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->set('key', $arr = ['a' => 'va', 'b' => 'vb']);
 
@@ -79,7 +79,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('has')->andReturn(false);
         $cache->shouldReceive('add')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->lang('lang1')->set('key', 'val1');
 
@@ -94,7 +94,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('add')->andReturn(true);
         $cache->shouldReceive('forget')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->set('key', 'value');
 
@@ -111,7 +111,7 @@ class UnitTest extends TestCase
         $cache->shouldReceive('has')->andReturn(false);
         $cache->shouldReceive('add')->andReturn(true);
 
-        $setting = new Setting(new EloquentStorage, $cache);
+        $setting = new Setting(new EloquentStorage(), $cache);
 
         $setting->set('key', 'value');
 
@@ -142,11 +142,11 @@ class UnitTest extends TestCase
 
     protected function migrationUp()
     {
-        (new CreateSettingsTable)->up();
+        (new CreateSettingsTable())->up();
     }
 
     protected function migrationDown()
     {
-        (new CreateSettingsTable)->down();
+        (new CreateSettingsTable())->down();
     }
 }
