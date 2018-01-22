@@ -22,7 +22,7 @@ class SettingServiceProvider extends ServiceProvider
         $filename = '2015_08_06_184708_create_settings_table.php';
 
         $this->publishes([
-            __DIR__ . '/../migrations/' . $filename => base_path('/database/migrations/' . $filename),
+            __DIR__ . '/../../database/migrations/' . $filename => base_path('/database/migrations/' . $filename),
         ], 'settings');
     }
 
