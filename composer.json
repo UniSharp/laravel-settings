@@ -36,5 +36,13 @@
     "psr-4": {
       "Unisharp\\Setting\\": "src/Setting/"
     }
+  },
+  "laravel": {
+    "providers": [
+      "Unisharp\\Setting\\SettingServiceProvider"
+    ],
+    "aliases": {
+      "Setting": "Unisharp\\Setting\\SettingFacade"
+    }
   }
 }

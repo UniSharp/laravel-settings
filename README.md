@@ -14,7 +14,7 @@
     composer require unisharp/laravel-settings
     ```
 
-1. Edit config/app.php
+1. Edit config/app.php (Skip this step if you are using laravel 5.5+)
 
     service provider:
 
