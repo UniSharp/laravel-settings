@@ -37,12 +37,14 @@
       "Unisharp\\Setting\\": "src/Setting/"
     }
   },
-  "laravel": {
-    "providers": [
-      "Unisharp\\Setting\\SettingServiceProvider"
-    ],
-    "aliases": {
-      "Setting": "Unisharp\\Setting\\SettingFacade"
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Unisharp\\Setting\\SettingServiceProvider"
+      ],
+      "aliases": {
+        "Setting": "Unisharp\\Setting\\SettingFacade"
+      }
     }
   }
 }
