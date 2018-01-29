@@ -140,6 +140,29 @@ class SettingsTest extends TestCase
         Schema::swap(Manager::Schema());
     }
 
+    public function testNullValue()
+    {
+        $cache = m::mock(CacheContract::class);
+        $cache->shouldReceive('has')->andReturn(false);
+        $cache->shouldReceive('add')->andReturn(true);
+
+        $setting = new Setting(new EloquentStorage(), $cache);
+        $setting->set('a', null);
+        $this->assertTrue($setting->get('a') === null);
+        $this->assertTrue($setting->get('b') === null);
+
+        $setting->set('foo.bar', null);
+        $this->assertTrue($setting->get('foo.bar') === null);
+
+        $this->assertTrue($setting->get('foo.xxx') === null);
+
+        $setting->set('foo.zzz', 0);
+        $this->assertTrue($setting->get('foo.zzz') === 0);
+
+        $setting->set('foo.yyy', []);
+        $this->assertTrue($setting->get('foo.yyy') === []);
+    }
+
     protected function migrationUp()
     {
         (new CreateSettingsTable())->up();

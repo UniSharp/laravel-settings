@@ -203,17 +203,14 @@ class Setting
     {
         if (strpos($key, '.') !== false) {
             $setting = $this->getSubValue($key);
-
-            return (empty($setting)) ? false : true;
         } else {
             if ($this->cache->has($key.'@'.$this->lang)) {
                 $setting = $this->cache->get($key.'@'.$this->lang);
             } else {
                 $setting = $this->storage->retrieve($key, $this->lang);
             }
-
-            return (empty($setting)) ? false : true;
         }
+        return ($setting === null) ? false : true;
     }
 
     protected function forgetByKey($key)
