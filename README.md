@@ -42,6 +42,9 @@ Setting::get('name', 'Computer');
 // get setting value with key 'name'
 // return 'Computer' if the key does not exists
 
+Setting::all();
+// get all settings
+
 Setting::lang('zh-TW')->get('name', 'Computer');
 // get setting value with key and language
 
