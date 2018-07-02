@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.org/UniSharp/laravel-settings.svg?branch=master)](https://travis-ci.org/UniSharp/laravel-settings)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
 # Persistent Settings Manager for Laravel
 
@@ -91,3 +96,18 @@ By default language parameter are being resets every set or get calls. You could
 ```php
 Setting::lang(App::getLocale())->langResetting(false);
 ```
+
+[ico-version]: https://img.shields.io/packagist/v/UniSharp/categorizable.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/UniSharp/categorizable/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/UniSharp/categorizable.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/UniSharp/categorizable.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/UniSharp/categorizable.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/unisharp/categorizable
+[link-travis]: https://travis-ci.org/UniSharp/categorizable
+[link-scrutinizer]: https://scrutinizer-ci.com/g/UniSharp/categorizable/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/UniSharp/categorizable
+[link-downloads]: https://packagist.org/packages/UniSharp/categorizable
+[link-author]: https://github.com/UniSharp
+[link-contributors]: ../../contributors

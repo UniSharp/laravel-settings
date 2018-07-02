@@ -1,19 +1,24 @@
+dist: trusty
 language: php
 php:
-  - '7.0'
-  - '7.1'
-
-env:
-  - SH=bash
-
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install bc -y
-
+- 7.1
+- 7.2
+- hhvm
+sudo: false
+cache:
+  directories:
+  - "$HOME/.composer/cache"
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-dist
-
+- travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 script:
-  - vendor/bin/phpunit --verbose
-  - bash -c "[ $(echo "$(grep '^  Lines' builds/coverage.txt | awk '{print $2;}' | tr -d '%') >= 75" | bc) -eq "1" ]"
+- vendor/bin/phpcs --standard=psr2 src/
+- vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+after_script:
+- |
+  if [[ "$TRAVIS_PHP_VERSION" != 'hhvm' && "$TRAVIS_PHP_VERSION" != '7.0' ]]; then
+    wget https://scrutinizer-ci.com/ocular.phar
+    php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  fi
+notifications:
+  slack:
+    secure: iqKB9XHZJGnot9ww9ipk+Rvb/mRPrFpNe8wWZZvEc0UTZFelg+G4MN71CcHwP30acWG6yJroyU2Ikrr/wwuJ6rg5mmk+daYymvdDLiAJyEZGX4FyVv/C8uyz/ys7jnUZt61s4Uq4VisBMv5wBH2MHEQ2AzI0kHl1JW0v1Rw0B3GXNI6NJha5353cDw3/6Zo+sU1/Iik/KlA5altL10LRquohn5t9aBhWOA0QVRPZrASztuAlYu5DPlpyf5iMtXUN1f4ESiZL54PjSG9ul80DkaqGEyr0Duzd0pb6+Qj9F6WYWdj64UzicG9o/wCvuorbur29cv01RfjSfpCJBqm4McWTz7FeDQo7qk1HH4sHnROWVyyr+2OJY0js0eZBEMGcAllUfkSJ4tQaUj9Se/Y8CUl8nD3XAeN/EwIHAW8KU4ATKU4YXKGA9maiXV2Rbp3ohzJK4To6deLYvMwE5UscmOBRvd7lpfLV/f0b8PkLOsptmwUPD/0horyfl89kuu9V9XShBuMDiga2nrCGM4yEz5dL76u5es5QYdfjfqCNL6kIsIq0EraWoHz7LcXbijTDTRsAp8tFLNmRj2A5VcjE7W989DDZwmelSK9j+Lf/SXcliU0kxP3g7tEC8ieyQTo5FVbqvpC9joMD/1CuIKHZOJU74tQ2mX/Wd3dJ+nBVZOk=
