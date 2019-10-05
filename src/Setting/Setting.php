@@ -3,6 +3,7 @@
 namespace Unisharp\Setting;
 
 use Illuminate\Contracts\Cache\Factory as CacheContract;
+use Illuminate\Support\Arr;
 
 class Setting
 {
@@ -226,7 +227,7 @@ class Setting
 
         $subkey = $this->removeMainKey($key);
 
-        $setting = array_get($setting, $subkey);
+        $setting = Arr::get($setting, $subkey);
 
         return $setting;
     }
